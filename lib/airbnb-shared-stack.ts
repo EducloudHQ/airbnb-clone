@@ -20,7 +20,37 @@ export class AirbnbSharedStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    /**
+     * UserPool and UserPool Client
+     */
+    const userPool: UserPool = new cognito.UserPool(
+      this,
+      "ACMSCognitoUserPool",
+      {
+        selfSignUpEnabled: true,
+        accountRecovery: cognito.AccountRecovery.PHONE_AND_EMAIL,
+        userVerification: {
+          emailStyle: cognito.VerificationEmailStyle.CODE,
+        },
+        autoVerify: {
+          email: true,
+        },
+        standardAttributes: {
+          email: {
+            required: true,
+            mutable: true,
+          },
+        },
+      }
+    );
 
-   
+    const userPoolClient: UserPoolClient = new cognito.UserPoolClient(
+      this,
+      "ACMSUserPoolClient",
+      {
+        userPool,
+      }
+    );
+
   }
 }
