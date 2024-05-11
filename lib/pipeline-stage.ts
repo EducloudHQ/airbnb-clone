@@ -3,6 +3,8 @@ import { Stage, StageProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { UserStacks } from "./user-stack";
 import { BuildingStacks } from "./building-stack";
+import { ApartmentStatus } from "../src/types/appsync";
+import { ApartmentStacks } from "./apartment-stack";
 
 export class PipelineStage extends Stage {
   constructor(scope: Construct, id: string, props: StageProps) {
@@ -18,6 +20,11 @@ export class PipelineStage extends Stage {
       });
 
       new BuildingStacks(this, "BuildingStacks", {
+        airbnbDatabase: sharedStack.airbnbDatabase,
+        airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
+      });
+
+      new ApartmentStacks(this, "BuildingStacks", {
         airbnbDatabase: sharedStack.airbnbDatabase,
         airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
       });

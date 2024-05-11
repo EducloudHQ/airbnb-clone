@@ -10,7 +10,7 @@ interface ApartmentStackProps extends StackProps {
   airbnbDatabase: Table;
 }
 
-export class ApartmentLamdaStacks extends Stack {
+export class ApartmentStacks extends Stack {
   constructor(scope: Construct, id: string, props: ApartmentStackProps) {
     super(scope, id, props);
 
