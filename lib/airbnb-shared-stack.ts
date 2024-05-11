@@ -52,5 +52,40 @@ export class AirbnbSharedStack extends Stack {
       }
     );
 
+    /**
+     * GraphQL API
+     */
+    this.acmsGraphqlApi = new appsync.GraphqlApi(this, "Api", {
+      name: "apartment-complex-management",
+      schema: appsync.SchemaFile.fromAsset("schema/schema.graphql"),
+      authorizationConfig: {
+        defaultAuthorization: {
+          authorizationType: appsync.AuthorizationType.API_KEY,
+        },
+
+        additionalAuthorizationModes: [
+          {
+            authorizationType: appsync.AuthorizationType.USER_POOL,
+            userPoolConfig: {
+              userPool,
+            },
+          },
+        ],
+      },
+      xrayEnabled: true,
+      logConfig: {
+        fieldLogLevel: appsync.FieldLogLevel.ALL,
+      },
+    });
+
+    /**
+     * Graphql Schema
+     */
+
+    this.apiSchema = new appsync.CfnGraphQLSchema(this, "ACMSGraphqlApiSchema", {
+      apiId: this.acmsGraphqlApi.apiId,
+      definition: readFileSync("./schema/schema.graphql").toString(),
+    });
+
   }
 }
