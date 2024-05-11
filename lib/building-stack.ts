@@ -16,31 +16,31 @@ export class BuildingStacks extends Stack {
 
     const { airbnbDatabase, airbnbGraphqlApi } = props;
 
-    // const buildingFunction = new appsync.AppsyncFunction(
-    //   this,
-    //   "createBuilding",
-    //   {
-    //     name: "createBuilding",
-    //     api: airbnbGraphqlApi,
-    //     dataSource: airbnbGraphqlApi.addDynamoDbDataSource(
-    //       "airbnbBuildingDataSource",
-    //       airbnbDatabase
-    //     ),
-    //     code: bundleAppSyncResolver("src/resolvers/building/createBuilding.ts"),
-    //     runtime: appsync.FunctionRuntime.JS_1_0_0,
-    //   }
-    // );
+    const buildingFunction = new appsync.AppsyncFunction(
+      this,
+      "createBuilding",
+      {
+        name: "createBuilding",
+        api: airbnbGraphqlApi,
+        dataSource: airbnbGraphqlApi.addDynamoDbDataSource(
+          "airbnbBuildingDataSource",
+          airbnbDatabase
+        ),
+        code: bundleAppSyncResolver("src/resolvers/building/createBuilding.ts"),
+        runtime: appsync.FunctionRuntime.JS_1_0_0,
+      }
+    );
 
-    // new appsync.Resolver(this, "createBuildingResolver", {
-    //   api: airbnbGraphqlApi,
-    //   typeName: "Mutation",
-    //   fieldName: "createBuilding",
-    //   code: appsync.Code.fromAsset(
-    //     join(__dirname, "./js_resolvers/_before_and_after_mapping_template.js")
-    //   ),
-    //   runtime: appsync.FunctionRuntime.JS_1_0_0,
-    //   pipelineConfig: [buildingFunction],
-    // });
+    new appsync.Resolver(this, "createBuildingResolver", {
+      api: airbnbGraphqlApi,
+      typeName: "Mutation",
+      fieldName: "createBuilding",
+      code: appsync.Code.fromAsset(
+        join(__dirname, "./js_resolvers/_before_and_after_mapping_template.js")
+      ),
+      runtime: appsync.FunctionRuntime.JS_1_0_0,
+      pipelineConfig: [buildingFunction],
+    });
 
   }
 }
