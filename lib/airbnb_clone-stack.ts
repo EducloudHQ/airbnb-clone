@@ -1,11 +1,12 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
 import {
   CodePipeline,
   ShellStep,
   CodePipelineSource,
+  ManualApprovalStep,
 } from "aws-cdk-lib/pipelines";
-import { PipelineStage } from './pipeline-stage';
+import { PipelineStage } from "./pipeline-stage";
 
 export class AirbnbCloneStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -13,10 +14,7 @@ export class AirbnbCloneStack extends cdk.Stack {
 
     const pipeline = new CodePipeline(this, "Pipeline", {
       synth: new ShellStep("synth", {
-        input: CodePipelineSource.gitHub(
-          "vernyuy/airbnb-clone",
-          "dev"
-        ),
+        input: CodePipelineSource.gitHub("vernyuy/airbnb-clone", "dev"),
         commands: ["npm ci", "npm run build", "npx cdk synth"],
       }),
     });
@@ -28,6 +26,16 @@ export class AirbnbCloneStack extends cdk.Stack {
       new PipelineStage(this, "PipelineDevStage", {
         stageName: "dev",
       })
+    );
+
+    const prodStage = pipeline.addStage(
+      new PipelineStage(this, "PipelineProdStage", {
+        stageName: "prod",
+      })
+    );
+
+    devStage.addPost(
+      new ManualApprovalStep("Manual aproval before production")
     );
   }
 }
