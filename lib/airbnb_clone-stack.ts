@@ -13,8 +13,8 @@ export class AirbnbCloneStack extends cdk.Stack {
     new CodePipeline(this, "Pipeline", {
       synth: new ShellStep("synth", {
         input: CodePipelineSource.gitHub(
-          "<github-name>/<repo-name>",
-          "<branch-name>"
+          "vernyuy/airbnb-clone",
+          "dev"
         ),
         commands: ["npm ci", "npm run build", "npx cdk synth"],
       }),
