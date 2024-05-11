@@ -1,4 +1,4 @@
-*.js
+!_before_and_after_mapping_template.js
 !jest.config.js
 *.d.ts
 node_modules
