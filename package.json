@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "codegen": "graphql-codegen"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.2",
