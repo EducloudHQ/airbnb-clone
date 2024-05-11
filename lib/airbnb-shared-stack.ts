@@ -12,7 +12,7 @@ import {
 } from "aws-cdk-lib/aws-dynamodb";
 import { readFileSync } from "fs";
 
-export class AcmsSharedStack extends Stack {
+export class AirbnbSharedStack extends Stack {
   public readonly acmsDatabase: Table;
   public readonly acmsGraphqlApi: appsync.GraphqlApi;
   public readonly apiSchema: appsync.CfnGraphQLSchema;
