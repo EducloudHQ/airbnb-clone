@@ -12,8 +12,8 @@ export class PipelineStage extends Stage {
      ***********************************/
     const sharedStack = new AirbnbSharedStack(this, "sharedStack");
     new UserStacks(this, "UserStacks", {
-        acmsDatabase: sharedStack.acmsDatabase,
-        acmsGraphqlApi: sharedStack.acmsGraphqlApi,
+        airbnbDatabase: sharedStack.airbnbDatabase,
+        airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
       });
   }
 }

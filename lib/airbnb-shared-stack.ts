@@ -13,8 +13,8 @@ import {
 import { readFileSync } from "fs";
 
 export class AirbnbSharedStack extends Stack {
-  public readonly acmsDatabase: Table;
-  public readonly acmsGraphqlApi: appsync.GraphqlApi;
+  public readonly airbnbDatabase: Table;
+  public readonly airbnbGraphqlApi: appsync.GraphqlApi;
   public readonly apiSchema: appsync.CfnGraphQLSchema;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -25,7 +25,7 @@ export class AirbnbSharedStack extends Stack {
      */
     const userPool: UserPool = new cognito.UserPool(
       this,
-      "ACMSCognitoUserPool",
+      "airbnbCognitoUserPool",
       {
         selfSignUpEnabled: true,
         accountRecovery: cognito.AccountRecovery.PHONE_AND_EMAIL,
@@ -46,7 +46,7 @@ export class AirbnbSharedStack extends Stack {
 
     const userPoolClient: UserPoolClient = new cognito.UserPoolClient(
       this,
-      "ACMSUserPoolClient",
+      "airbnbUserPoolClient",
       {
         userPool,
       }
@@ -55,7 +55,7 @@ export class AirbnbSharedStack extends Stack {
     /**
      * GraphQL API
      */
-    this.acmsGraphqlApi = new appsync.GraphqlApi(this, "Api", {
+    this.airbnbGraphqlApi = new appsync.GraphqlApi(this, "Api", {
       name: "apartment-complex-management",
       schema: appsync.SchemaFile.fromAsset("schema/schema.graphql"),
       authorizationConfig: {
@@ -82,8 +82,8 @@ export class AirbnbSharedStack extends Stack {
      * Graphql Schema
      */
 
-    this.apiSchema = new appsync.CfnGraphQLSchema(this, "ACMSGraphqlApiSchema", {
-      apiId: this.acmsGraphqlApi.apiId,
+    this.apiSchema = new appsync.CfnGraphQLSchema(this, "airbnbGraphqlApiSchema", {
+      apiId: this.airbnbGraphqlApi.apiId,
       definition: readFileSync("./schema/schema.graphql").toString(),
     });
 
@@ -91,8 +91,8 @@ export class AirbnbSharedStack extends Stack {
      * Database
      */
 
-    this.acmsDatabase = new Table(this, "ACMSDynamoDbTable", {
-      tableName: "AcmsDynamoDBDatabaseTable",
+    this.airbnbDatabase = new Table(this, "airbnbDynamoDbTable", {
+      tableName: "airbnbDynamoDBDatabaseTable",
 
       partitionKey: {
         name: "PK",
@@ -109,7 +109,7 @@ export class AirbnbSharedStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    this.acmsDatabase.addGlobalSecondaryIndex({
+    this.airbnbDatabase.addGlobalSecondaryIndex({
       indexName: "getAllApartmentsPerUser",
       partitionKey: {
         name: "GSI1PK",
@@ -136,11 +136,11 @@ export class AirbnbSharedStack extends Stack {
     });
 
     new CfnOutput(this, "GraphQLAPI ID", {
-      value: this.acmsGraphqlApi.apiId!,
+      value: this.airbnbGraphqlApi.apiId!,
     });
 
     new CfnOutput(this, "GraphQLAPI URL", {
-      value: this.acmsGraphqlApi.graphqlUrl,
+      value: this.airbnbGraphqlApi.graphqlUrl,
     });
   }
 }
