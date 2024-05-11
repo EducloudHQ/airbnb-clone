@@ -1,16 +1,24 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import {
+  CodePipeline,
+  ShellStep,
+  CodePipelineSource,
+} from "aws-cdk-lib/pipelines";
 
 export class AirbnbCloneStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    new CodePipeline(this, "Pipeline", {
+      synth: new ShellStep("synth", {
+        input: CodePipelineSource.gitHub(
+          "<github-name>/<repo-name>",
+          "<branch-name>"
+        ),
+        commands: ["npm ci", "npm run build", "npx cdk synth"],
+      }),
+    });
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'AirbnbCloneQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
   }
 }
