@@ -41,6 +41,7 @@ export class AirbnbSharedStack extends Stack {
             mutable: true,
           },
         },
+        removalPolicy: RemovalPolicy.DESTROY,
       }
     );
 
@@ -119,7 +120,6 @@ export class AirbnbSharedStack extends Stack {
         name: "GSI1SK",
         type: AttributeType.STRING,
       },
-
       projectionType: ProjectionType.ALL,
     });
 
