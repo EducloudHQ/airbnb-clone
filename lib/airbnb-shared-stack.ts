@@ -56,7 +56,7 @@ export class AirbnbSharedStack extends Stack {
      * GraphQL API
      */
     this.airbnbGraphqlApi = new appsync.GraphqlApi(this, "Api", {
-      name: "apartment-complex-management",
+      name: "airbnd",
       schema: appsync.SchemaFile.fromAsset("schema/schema.graphql"),
       authorizationConfig: {
         defaultAuthorization: {
