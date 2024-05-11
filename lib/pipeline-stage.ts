@@ -17,9 +17,9 @@ export class PipelineStage extends Stage {
         airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
       });
 
-      new BuildingStacks(this, "BuildingStacks", {
-        airbnbDatabase: sharedStack.airbnbDatabase,
-        airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
-      });
+    //   new BuildingStacks(this, "BuildingStacks", {
+    //     airbnbDatabase: sharedStack.airbnbDatabase,
+    //     airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
+    //   });
   }
 }
