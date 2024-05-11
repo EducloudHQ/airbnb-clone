@@ -5,12 +5,13 @@ import {
   ShellStep,
   CodePipelineSource,
 } from "aws-cdk-lib/pipelines";
+import { PipelineStage } from './pipeline-stage';
 
 export class AirbnbCloneStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    new CodePipeline(this, "Pipeline", {
+    const pipeline = new CodePipeline(this, "Pipeline", {
       synth: new ShellStep("synth", {
         input: CodePipelineSource.gitHub(
           "vernyuy/airbnb-clone",
@@ -20,5 +21,13 @@ export class AirbnbCloneStack extends cdk.Stack {
       }),
     });
 
+    /*********************************
+     *    Add development stage
+     *********************************/
+    const devStage = pipeline.addStage(
+      new PipelineStage(this, "PipelineDevStage", {
+        stageName: "dev",
+      })
+    );
   }
 }
