@@ -87,5 +87,60 @@ export class AirbnbSharedStack extends Stack {
       definition: readFileSync("./schema/schema.graphql").toString(),
     });
 
+    /**
+     * Database
+     */
+
+    this.acmsDatabase = new Table(this, "ACMSDynamoDbTable", {
+      tableName: "AcmsDynamoDBDatabaseTable",
+
+      partitionKey: {
+        name: "PK",
+        type: AttributeType.STRING,
+      },
+      sortKey: {
+        name: "SK",
+        type: AttributeType.STRING,
+      },
+
+      billingMode: BillingMode.PAY_PER_REQUEST,
+      stream: StreamViewType.NEW_IMAGE,
+
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+
+    this.acmsDatabase.addGlobalSecondaryIndex({
+      indexName: "getAllApartmentsPerUser",
+      partitionKey: {
+        name: "GSI1PK",
+        type: AttributeType.STRING,
+      },
+      sortKey: {
+        name: "GSI1SK",
+        type: AttributeType.STRING,
+      },
+
+      projectionType: ProjectionType.ALL,
+    });
+
+
+    /**
+     * Outputs
+     */
+
+    new CfnOutput(this, "UserPoolId", {
+      value: userPool.userPoolId,
+    });
+    new CfnOutput(this, "UserPoolClientId", {
+      value: userPoolClient.userPoolClientId,
+    });
+
+    new CfnOutput(this, "GraphQLAPI ID", {
+      value: this.acmsGraphqlApi.apiId!,
+    });
+
+    new CfnOutput(this, "GraphQLAPI URL", {
+      value: this.acmsGraphqlApi.graphqlUrl,
+    });
   }
 }
