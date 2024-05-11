@@ -1,0 +1,211 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Mutation {
+  createUserAccount(input: UserInput!): User! @aws_cognito_user_pools
+  updateUserAccount(input: UpdateUserInput!): User! @aws_cognito_user_pools
+  deleteUserAccount(id: ID!): Boolean! @aws_cognito_user_pools
+  leaveFeedback(input: RatingsAndFeedbackInput!): RatingsAndFeedback!
+    @aws_cognito_user_pools
+
+  createBuilding(input: BuildingInput!): Building!
+    @aws_cognito_user_pools(cognito_groups: ["Admins"])
+
+  createApartment(input: ApartmentInput): Apartment!
+    @aws_cognito_user_pools(cognito_groups: ["Admins"])
+
+  createApartmentBooking(input: CreateBookingInput!): Boolean!
+    @aws_cognito_user_pools(cognito_groups: ["Tenants"])
+}
+
+type Query {
+  getUserAccount(id: ID!): User! @aws_cognito_user_pools
+
+  getAllUserAccounts(pagination: Pagination): UsersResult!
+    @aws_cognito_user_pools(cognito_groups: ["Admins", "Caretakers"])
+
+  getAllBookingsPerApartment(apartmentId: String!): [Booking!]!
+    @aws_cognito_user_pools
+  getApartmentFeedback(apartmentId: String!): [RatingsAndFeedback!]!
+    @aws_cognito_user_pools
+  getSingleApartment(buildingId: String!, apartmentId: String!): [Apartment!]!
+    @aws_cognito_user_pools
+  getAllApartmentsPerBuilding(buildingId: String!): ApartmentsResult!
+    @aws_cognito_user_pools
+}
+
+input CreateBookingInput {
+  userId: String!
+  apartmentId: String!
+  startDate: AWSDate!
+  endDate: AWSDate!
+  bookingStatus: BookingStatus!
+}
+
+input BuildingInput {
+  name: String!
+  userId: String!
+  imageUrls: [String!]!
+  numberOfApartments: Int!
+  address: AddressInput!
+}
+
+type Address @aws_cognito_user_pools {
+  streetAddress: String!
+  postalCode: String!
+  city: String!
+  country: String!
+  geoLocation: GeoLocation!
+}
+input GeoLocationInput @aws_cognito_user_pools {
+  longitude: Float!
+  latitude: Float!
+}
+type GeoLocation @aws_cognito_user_pools {
+  longitude: Float!
+  latitude: Float!
+}
+input AddressInput {
+  streetAddress: String!
+  postalCode: String!
+  city: String!
+  country: String!
+  geoLocation: GeoLocationInput!
+}
+type User @aws_cognito_user_pools {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  verified: Boolean!
+  userType: UserType!
+  updatedOn: AWSDateTime
+  createdOn: AWSDateTime!
+}
+type Booking @aws_cognito_user_pools {
+  id: ID!
+  userId: String!
+  user: User!
+  startDate: AWSDate!
+  endDate: AWSDate!
+  apartmentId: String!
+  bookingStatus: BookingStatus!
+  updateOn: AWSDateTime!
+  createdOn: AWSDateTime!
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  CANCELLED
+}
+
+input UserInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  verified: Boolean!
+  userType: UserType!
+}
+
+input UpdateUserInput {
+  firstName: String!
+  lastName: String!
+  verified: Boolean!
+  userType: UserType!
+}
+
+type RatingsAndFeedback @aws_cognito_user_pools {
+  id: String!
+  ratings: Int!
+  userId: String!
+  user: User!
+  apartment: Apartment!
+  apartmentId: String!
+  feedback: String!
+  createdOn: AWSTimestamp!
+}
+
+input RatingsAndFeedbackInput @aws_cognito_user_pools {
+  ratings: Int!
+  userId: String!
+  apartmentId: String!
+  feedback: String!
+}
+
+type Building @aws_cognito_user_pools {
+  id: ID!
+  userId: String!
+  name: String!
+  address: Address!
+  imageUrls: [String!]!
+  numberOfApartments: Int!
+  apartments: [Apartment!]
+  updateOn: AWSDateTime!
+  createdOn: AWSDateTime!
+}
+
+type Apartment @aws_cognito_user_pools {
+  id: ID!
+  apartmentNumber: String!
+  building: Building!
+  tenant: User!
+  caretaker: User!
+  imageUrls: [String!]!
+  apartmentType: ApartmentType!
+  apartmentStatus: ApartmentStatus!
+  numberOfBedrooms: Int!
+  numberOfLivingRooms: Int!
+  numberOfBathrooms: Int!
+  numberOfKitchens: Int!
+  kitchen: Boolean!
+  numberOfRooms: Int!
+  createdOn: AWSDateTime!
+}
+
+input ApartmentInput @aws_cognito_user_pools {
+  apartmentNumber: String!
+  buildingId: String!
+  imageUrls: [String!]!
+  numberOfBedrooms: Int!
+  numberOfLivingRooms: Int!
+  numberOfBathrooms: Int!
+  numberOfKitchens: Int!
+  apartmentDetails: AWSJSON!
+  apartmentType: ApartmentType!
+  apartmentStatus: ApartmentStatus!
+}
+type UsersResult @aws_cognito_user_pools {
+  items: [User!]!
+  nextToken: String
+}
+
+type ApartmentsResult @aws_cognito_user_pools {
+  items: [Apartment!]!
+  nextToken: String
+}
+
+input Pagination {
+  limit: Int
+  nextToken: String
+}
+
+enum ApartmentType {
+  SINGLE_ROOM
+  STUDIO
+  ONE_BEDROOM
+  VILLA
+  DUPLEX
+  PENTHOUSE
+}
+enum ApartmentStatus {
+  VACANT
+  OCCUPIED
+}
+enum UserType {
+  ADMIN
+  TENANT
+  CARETAKER
+}
