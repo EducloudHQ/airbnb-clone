@@ -11,6 +11,8 @@
     "cdk": "cdk"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.6",
     "@types/jest": "^29.5.12",
     "@types/node": "20.11.30",
     "aws-cdk": "2.137.0",
