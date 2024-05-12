@@ -8,20 +8,25 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "codegen": "graphql-codegen"
   },
   "devDependencies": {
+    "@aws-appsync/utils": "^1.7.0",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.6",
     "@types/jest": "^29.5.12",
     "@types/node": "20.11.30",
+    "aws-cdk": "2.137.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
-    "aws-cdk": "2.137.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.4.3"
   },
   "dependencies": {
     "aws-cdk-lib": "2.137.0",
     "constructs": "^10.0.0",
+    "esbuild": "^0.21.1",
     "source-map-support": "^0.5.21"
   }
 }
