@@ -2,6 +2,10 @@ import { AirbnbSharedStack } from "./airbnb-shared-stack";
 import { Stage, StageProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { UserStacks } from "./user-stack";
+import { BuildingStacks } from "./building-stack";
+import { ApartmentStatus } from "../src/types/appsync";
+import { ApartmentStacks } from "./apartment-stack";
+import { RatingsAndFeedbackStack } from "./ratings-feedback-stack";
 
 export class PipelineStage extends Stage {
   constructor(scope: Construct, id: string, props: StageProps) {
@@ -12,8 +16,23 @@ export class PipelineStage extends Stage {
      ***********************************/
     const sharedStack = new AirbnbSharedStack(this, "sharedStack");
     new UserStacks(this, "UserStacks", {
-        acmsDatabase: sharedStack.acmsDatabase,
-        acmsGraphqlApi: sharedStack.acmsGraphqlApi,
+        airbnbDatabase: sharedStack.airbnbDatabase,
+        airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
+      });
+
+      new BuildingStacks(this, "BuildingStacks", {
+        airbnbDatabase: sharedStack.airbnbDatabase,
+        airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
+      });
+
+      new ApartmentStacks(this, "ApartmentStacks", {
+        airbnbDatabase: sharedStack.airbnbDatabase,
+        airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
+      });
+
+      new RatingsAndFeedbackStack(this, "RatingsAndFeedbackStacks", {
+        airbnbDatabase: sharedStack.airbnbDatabase,
+        airbnbGraphqlApi: sharedStack.airbnbGraphqlApi,
       });
   }
 }

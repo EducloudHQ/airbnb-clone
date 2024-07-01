@@ -5,37 +5,37 @@ import { join } from "path";
 import * as appsync from "aws-cdk-lib/aws-appsync";
 import { bundleAppSyncResolver } from "./helpers";
 
-interface UserLambdaStackProps extends StackProps {
-  acmsGraphqlApi: appsync.GraphqlApi;
-  acmsDatabase: Table;
+interface UserStackProps extends StackProps {
+  airbnbGraphqlApi: appsync.GraphqlApi;
+  airbnbDatabase: Table;
 }
 export class UserStacks extends Stack {
-  constructor(scope: Construct, id: string, props: UserLambdaStackProps) {
+  constructor(scope: Construct, id: string, props: UserStackProps) {
     super(scope, id, props);
 
-    const { acmsDatabase, acmsGraphqlApi } = props;
-    const acmsDataSource = acmsGraphqlApi.addDynamoDbDataSource(
-      "acmsdbs",
-      acmsDatabase
+    const { airbnbDatabase, airbnbGraphqlApi } = props;
+    const airbnbDataSource = airbnbGraphqlApi.addDynamoDbDataSource(
+      "airbnbdbs",
+      airbnbDatabase
     )
-    const acmsUserFunction = new appsync.AppsyncFunction(this, "createUserAccount", {
+    const airbnbUserFunction = new appsync.AppsyncFunction(this, "createUserAccount", {
       name: "createUserAccount",
-      api: acmsGraphqlApi,
-      dataSource: acmsDataSource,
+      api: airbnbGraphqlApi,
+      dataSource: airbnbDataSource,
       code: bundleAppSyncResolver("src/resolvers/user/createUserAccount.ts"),
       runtime: appsync.FunctionRuntime.JS_1_0_0,
     });
 
     const getUserAccount = new appsync.AppsyncFunction(this, "getUserAccount", {
       name: "getUserAccount",
-      api: acmsGraphqlApi,
-      dataSource: acmsDataSource,
+      api: airbnbGraphqlApi,
+      dataSource: airbnbDataSource,
       code: bundleAppSyncResolver("src/resolvers/user/getUserAccount.ts"),
       runtime: appsync.FunctionRuntime.JS_1_0_0,
     });
 
     new appsync.Resolver(this, "getUserAccountResolver", {
-      api: acmsGraphqlApi,
+      api: airbnbGraphqlApi,
       typeName: "Query",
       fieldName: "getUserAccount",
       code: appsync.Code.fromAsset(
@@ -46,14 +46,14 @@ export class UserStacks extends Stack {
     });
 
     new appsync.Resolver(this, "createUserResolver", {
-      api: acmsGraphqlApi,
+      api: airbnbGraphqlApi,
       typeName: "Mutation",
       fieldName: "createUserAccount",
       code: appsync.Code.fromAsset(
         join(__dirname, "./js_resolvers/_before_and_after_mapping_template.js")
       ),
       runtime: appsync.FunctionRuntime.JS_1_0_0,
-      pipelineConfig: [acmsUserFunction],
+      pipelineConfig: [airbnbUserFunction],
     });
   }
 }
