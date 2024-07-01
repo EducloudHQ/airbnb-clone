@@ -15,6 +15,7 @@
     "@aws-appsync/utils": "^1.7.0",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/typescript": "^4.0.6",
+    "@types/aws-lambda": "^8.10.140",
     "@types/jest": "^29.5.12",
     "@types/node": "20.11.30",
     "aws-cdk": "2.137.0",
@@ -24,7 +25,11 @@
     "typescript": "~5.4.3"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.606.0",
+    "@aws-sdk/client-sqs": "^3.606.0",
+    "@types/uuid": "^10.0.0",
     "aws-cdk-lib": "2.137.0",
+    "aws-lambda": "^1.0.7",
     "constructs": "^10.0.0",
     "esbuild": "^0.21.1",
     "source-map-support": "^0.5.21"
