@@ -14,7 +14,7 @@ export class AirbnbCloneStack extends cdk.Stack {
 
     const pipeline = new CodePipeline(this, "PipelineTs", {
       synth: new ShellStep("synth", {
-        input: CodePipelineSource.gitHub("vernyuy/airbnb-ts", "dev"),
+        input: CodePipelineSource.gitHub("repo", "dev"),
         commands: ["npm ci", "npm run build", "npx cdk synth"],
       }),
     });
